@@ -14,6 +14,8 @@ Built on [Baseline](https://github.com/aaaaalexis/obsidian-baseline).
 
 </div>
 
+![](img/screenshot-1.png)
+
 ## Overview
 
 **The sidebar is part of the window.** Finder, Notes and Mail do not float their
