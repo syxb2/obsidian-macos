@@ -1,39 +1,20 @@
 <div align="center">
 
-<!-- 截图放在 img/。放好 img/hero.png 之后，把下面这行的注释去掉：
-![](img/hero.png)
--->
-
 # Obsidian MacOS
 
-### 左右边栏都贴边停靠的 Obsidian 主题。
+### 一个符合 Mac 原生风格的 Obsidian 主题
 
-基于 [Baseline](https://github.com/aaaaalexis/obsidian-baseline) 构建。
+基于 [Baseline](https://github.com/aaaaalexis/obsidian-baseline) 构建
 
 [English](README.md) · **简体中文**
 
-</div>
-
 ![](img/screenshot-1.png)
+
+</div>
 
 ## 概览
 
-**边栏是窗口的一部分。** macOS 上的访达、备忘录、邮件都不会把侧边栏做成浮在窗口上的
-卡片：它一路贴到窗口边缘，也在标题栏下面铺满。这个主题把左右两侧边栏都做成这种形态
-——贴边、方角、没有投影。
-
-**靠底色分区，不靠分割线。** macOS 用一层略深的底色把边栏和内容区分开，中间不画线。
-这里也一样：右边栏与编辑器之间那条分割线已经删掉，两侧从此一致；关闭
-*Translucent window* 时，边栏有自己的浅灰底色，白色工作区不会再透上来。设置窗口左侧
-那一列同样贴边、同色。
-
-**默认即定稿。** macOS 把外观的选择交给系统，拿到手的就是它本该有的样子。这个主题
-也是同一种思路：只有一种样子，没有设置项，不需要 Style Settings，不依赖任何插件，
-一个 CSS 文件就是全部。
-
-**移动端沿用同一套配置。** 手机和平板渲染的是 Baseline 的移动端样式，配色、字体、
-标注这些同样来自这份固化好的取值；本主题新增的边栏规则只作用于桌面端，移动端不做
-改动。以后不装 Style Settings，移动端也还是这个样子。
+这个主题把 macOS 原生应用的设计语言搬到 Obsidian 里：左右边栏不再是浮在窗口上的卡片，而是像访达、备忘录那样一路贴到窗口边缘、铺满标题栏下方，方角、无投影；边栏与内容之间靠一层略深的底色来分区，而不是画分割线——右边栏与编辑器之间那条线已删除，两侧从此一致，关闭 Translucent window 后边栏有自己固定的浅灰底，设置窗口左侧那一列也贴边同色。它刻意保持"默认即定稿"的思路：外观交给系统，拿到手就是本该有的样子，只有一种形态，没有设置项，不需要 Style Settings，不依赖任何插件，一个 CSS 文件就是全部。移动端沿用同一套已固化的配色、字体与标注取值，主题新增的边栏规则只作用于桌面端，移动端不做改动，也不受影响。
 
 ## 安装
 
@@ -45,8 +26,9 @@
 
 如果列表里没有，用 `Cmd`/`Ctrl` + `R` 重载一下应用。
 
-**从源码**——clone 仓库，跑 `npm install && npm run build`，再按上面两步把两个文件
-放过去。
+**从源码**
+
+clone 仓库，跑 `npm install && npm run build`，再按上面两步把两个文件放过去。
 
 ## 目录结构
 
@@ -61,8 +43,7 @@ img/                 本 README 用到的截图
 tools/               生成 src/ 的一次性脚本，编译主题用不到
 ```
 
-装主题只需要 `theme.css` 和 `manifest.json` 两个文件，其余目录都只和开发有关。仓库里
-不提供 `snippets/`，样式改动全部写在 `src/` 里。
+装主题只需要 `theme.css` 和 `manifest.json` 两个文件，其余目录都只和开发有关。仓库里不提供 `snippets/`，样式改动全部写在 `src/` 里。
 
 ## 编译
 
@@ -74,8 +55,7 @@ npm run build        # sass src/theme.scss theme.css —— 离线，几百毫�
 npm run watch        # 边改边自动重新编译
 ```
 
-装过这一次之后，`npm run build` 完全不需要网络。不想留 `node_modules/` 的话，用任何
-Sass 命令行都可以，例如 `brew install sass/sass/sass`，然后：
+装过这一次之后，`npm run build` 完全不需要网络。不想留 `node_modules/` 的话，用任何 Sass 命令行都可以，例如 `brew install sass/sass/sass`，然后：
 
 ```bash
 sass --no-source-map --no-charset --style=compressed src/theme.scss theme.css
@@ -86,12 +66,8 @@ sass --no-source-map --no-charset --style=compressed src/theme.scss theme.css
 
 ## 致谢
 
-- 主题基于 [**Baseline**](https://github.com/aaaaalexis/obsidian-baseline) 构建，
-  by [Alexis C](https://github.com/aaaaalexis)，MIT 许可。样式源码、工作区布局与内嵌
-  字体都来自它。
+- 主题基于 [**Baseline**](https://github.com/aaaaalexis/obsidian-baseline) 构建，by [Alexis C](https://github.com/aaaaalexis)，MIT 许可。样式源码、工作区布局与内嵌字体都来自它。
 - 内嵌标题字体：Instrument Serif。
-- Baseline 自身又建立在 [Minimal](https://github.com/kepano/obsidian-minimal)
-  等主题之上，完整名单见它的 README。
 
 ## 许可
 
