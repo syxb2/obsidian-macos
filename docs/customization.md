@@ -27,9 +27,12 @@ Baseline 在 macOS 布局里把左侧栏做成一枚悬浮卡片：8px 外边距
   `min/max-height: calc(var(--header-height) - 16px)`、内层元素的 `padding-block: 4px`
 - 只服务于那张卡片的变量 `--shadow-sidedock-spread`
 
-### 2. 左右边栏的浅灰底色（`src/layouts/macos.scss`）
+### 2. 左右边栏的底色（`src/layouts/macos.scss`）
 
-Baseline 只给了暗色下的边栏底色，亮色没有：
+边栏需要有自己的底色。没有的话，关闭 Translucent window 后工作区就是
+`--background-primary`，而边栏本身透明，会跟着工作区一个色、看不出边界。
+
+Baseline 只处理了暗色，而且要的是「比编辑器深一档」：
 
 ```scss
 &:not(.is-translucent).theme-dark .mod-sidedock {
@@ -37,9 +40,21 @@ Baseline 只给了暗色下的边栏底色，亮色没有：
 }
 ```
 
-我们的主题在它下面补了对应的一条（亮色用 `--background-secondary`，即 #f2f2f2）。
-没有这条时，关闭 Translucent window 后工作区是 `--background-primary`（纯白），
-而边栏本身透明，边栏就跟着变白、看不出边界。
+本主题给两边都加了底色，取值如下：
+
+```scss
+&:not(.is-translucent).theme-dark .mod-sidedock {
+  background-color: var(--background-primary-alt);
+}
+&:not(.is-tablet):not(.is-translucent).theme-light .mod-sidedock {
+  background-color: var(--background-secondary);
+}
+```
+
+两个变量在两种主题下正好是两个方向：亮色是编辑器混 5% 黑（`#f2f2f2` 对纯白），
+暗色是编辑器混 3% 白（`#252525` 对 `#1e1e1e`）。于是亮色下边栏比编辑器深一点，
+暗色下比编辑器浅一点点，与 macOS 上边栏和内容的关系一致。设置窗口左侧那一列
+取同一组值，跟主边栏保持同色。
 
 ### 3. 去掉右侧栏与编辑器之间的分割线（`src/layouts/macos.scss`）
 
@@ -122,8 +137,9 @@ npm run watch    # 或者边改边编译
 
 常见改动的位置：
 
-- **边栏底色深浅**：`src/layouts/macos.scss` 里搜 `--background-secondary`，
-  换成 `--background-secondary-alt`（约深 3%）
+- **边栏底色深浅**：`src/layouts/macos.scss` 里搜 `--background-secondary`。
+  换成 `--background-primary-alt` 是与编辑器差 3%，换成 `--background-secondary-alt`
+  是差 8%；亮色下这两个值更深，暗色下更浅
 - **恢复分隔线**：把上面第 3 条那段加回 `src/layouts/macos.scss`
 - **配色 / 字体 / 标签栏**：`src/app/config.scss`（变量）与
   `src/color-schemes/cupertino.scss`、`src/app/tabs.scss`

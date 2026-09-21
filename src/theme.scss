@@ -8,7 +8,8 @@ this is a modified copy of that source. See docs/customization.md.
 * Both sidebars are docked - no floating card, no rounded corners, no drop
   shadow, no resize-handle divider line.
 * The sidebars keep a surface of their own when "Translucent window" is off,
-  instead of falling back to the white workspace behind them.
+  instead of falling back to the workspace behind them: a shade darker than the
+  editor in light mode, a shade lighter in dark mode.
 * The settings window's sidebar matches them.
 * Phone and tablet styling is untouched.
 

@@ -10,6 +10,8 @@
 
 ![](img/screenshot-1.png)
 
+![](img/screenshot-2.png)
+
 </div>
 
 ## 概览

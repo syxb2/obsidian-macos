@@ -42,11 +42,13 @@ body:not(.is-mobile) {
     }
   }
 
+  // 边栏要有自己的底色，否则关闭 Translucent window 后它跟工作区同色，看不出边界。
+  // 亮色取 --background-secondary（比编辑器深 5%）；暗色取 --background-primary-alt
+  // （比编辑器浅 3%），比 --background-secondary 的 5% 收一点。
+  // Baseline 原本只有暗色这一条，用的是 calc(l - 2)，边栏比编辑器深。
   &:not(.is-translucent).theme-dark .mod-sidedock {
-    background-color: hsl(from var(--background-primary) h s calc(l - 2));
+    background-color: var(--background-primary-alt);
   }
-  // 亮色下边栏也要有自己的底色：关闭 Translucent window 时工作区是纯白，
-  // 边栏本身透明，会看不出边界。（Baseline 原本只给了暗色这一半）
   &:not(.is-tablet):not(.is-translucent).theme-light .mod-sidedock {
     background-color: var(--background-secondary);
   }
@@ -66,11 +68,12 @@ body:not(.is-mobile) {
     border-radius: 0;
     border-inline-end: none;
   }
+  // 设置窗口左侧那一列与主边栏同色
   &:not(.is-tablet).theme-light .modal.mod-settings .vertical-tab-header {
     background-color: var(--background-secondary);
   }
   &:not(.is-tablet).theme-dark .modal.mod-settings .vertical-tab-header {
-    background-color: hsl(from var(--background-primary) h s calc(l - 2));
+    background-color: var(--background-primary-alt);
   }
 }
 

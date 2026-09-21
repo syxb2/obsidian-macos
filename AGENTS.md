@@ -40,14 +40,31 @@ npm run watch  # 边改边编译
    （它排在 `@use` 列表最后，用来覆盖 Baseline 的同名默认值）。
 4. **移动端与平板保持 Baseline 原样。** 桌面改动都写在 `body:not(.is-mobile)` 段内，
    `body.is-tablet` 段和 `src/app/mobile.scss` 不要动；移动端只是共享了固化后的全局取值。
-5. **版本号三处同步**：`package.json`、`manifest.json`、`versions.json`。
+5. **版本号四处同步**：`package.json`、`package-lock.json`、`manifest.json`、`versions.json`。
    `versions.json` 里必须存在 `manifest.version` 这个键、值等于 `manifest.minAppVersion`，
-   且它是最新的键。
+   且它是最新的键。清单见「改 changelog 时要一起改的」。
 6. **发布靠 tag**：push `v1.2.0` 这类 tag 会触发 release 工作流，tag 去掉 `v` 必须等于
    `manifest.json` 的 `version`，否则失败。
 7. **别把构建残留提交进去**：`node_modules/`、`build/`、`.obsidian/`、`*.css.map` 已在
    `.gitignore` 里；反过来 `theme.css`、`manifest.json`、`versions.json`、`package-lock.json`
    必须提交。
+
+## 改 changelog 时要一起改的
+
+[`docs/changelog.md`](docs/changelog.md) 里的条目都对应一个已发布版本，所以加一条不等于
+只动那一个文件：
+
+1. 在 `docs/changelog.md` 最上面插入 `## <版本> — <日期>`，下面先写一句这次改了什么，
+   再列要点；最新的版本在最上面。
+2. 四处版本号改成同一个值：`package.json`、`package-lock.json`（顶层与 `packages[""]`
+   里各一份）、`manifest.json`、`versions.json`。
+3. `versions.json` 加上 `"<版本>": "<manifest.minAppVersion>"`，放在最前面；它必须是最新的
+   键，否则 CI 的元数据检查会失败。
+4. 这次要是动了 `src/`，先 `npm run build`，把重新编译的 `theme.css` 一起提交。
+5. 面向使用者的改动写进 changelog，源码层面的事（工具、工作流、目录调整）写进
+   [`docs/customization.md`](docs/customization.md)，两边不互相替代。
+6. 发布时打 `v<版本>` 的 tag，去掉 `v` 必须等于 `manifest.json` 的 `version`；
+   release 工作流会带上 `manifest.json` 与 `theme.css`。
 
 ## 重新派生源码时要小心
 
@@ -63,8 +80,8 @@ npm run watch  # 边改边编译
 
 ## 文档
 
-- 改样式就同步 [`docs/customization.md`](docs/customization.md)，发版本就补
-  [`docs/changelog.md`](docs/changelog.md)。
+- 改样式就同步 [`docs/customization.md`](docs/customization.md)；发版本时补
+  [`docs/changelog.md`](docs/changelog.md)，连同版本号一起改，清单见上一节。
 - 注释、`docs/`、`.gitignore` 用中文；`README.md` 英文、`README-zh.md` 中文，两边内容要一致。
 
 ## 提交前

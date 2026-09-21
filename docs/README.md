@@ -9,8 +9,25 @@
 | --- | --- |
 | `README.md` | 本页。docs/ 里有什么，以及整个仓库的目录怎么摆、每个文件做什么 |
 | [`customization.md`](customization.md) | 相对 Baseline 3.2.12 的改造记录：四处源码改动、固化的配置取值、删掉的上游文件、移动端说明、常见改动的位置、换基线版本的步骤。改样式之后要同步这里 |
-| [`changelog.md`](changelog.md) | 版本记录，一次发版一条 |
+| [`changelog.md`](changelog.md) | 版本记录，一次发版一条。改它时要连带动版本号，清单见下面「改 changelog 时要一起改的」 |
 | [`baseline-config.json`](baseline-config.json) | 当初固化的那套 Style Settings 取值（26 项），键名是 Baseline 的设置项 id。它回答「现在这个样子是从哪套配置来的」 |
+
+## 改 changelog 时要一起改的
+
+`changelog.md` 里的条目都对应一个已发布版本，加一条就不能只动它：
+
+1. 在 `changelog.md` 最上面插入 `## <版本> — <日期>`，下面先写一句这次改了什么，
+   再列要点；最新的版本在最上面。
+2. 四处版本号改成同一个值：`package.json`、`package-lock.json`（顶层与 `packages[""]`
+   里各一份）、`manifest.json`、`versions.json`。
+3. `versions.json` 加上 `"<版本>": "<manifest.minAppVersion>"`，放在最前面；它必须是最新
+   的键，否则 CI 的元数据检查会失败。
+4. 这次要是动了 `src/`，先 `npm run build`，把重新编译的 `theme.css` 一起提交。
+5. 发布时打 `v<版本>` 的 tag，去掉 `v` 必须等于 `manifest.json` 的 `version`；
+   release 工作流会带上 `manifest.json` 与 `theme.css`。
+
+面向使用者的改动写进 changelog，源码层面的事（工具、工作流、目录调整）写进
+[`customization.md`](customization.md)。
 
 ## 仓库目录
 
@@ -66,7 +83,7 @@ obsidian-macos/
 │       └── image-zoom.scss              图片点击放大
 ├── theme.css                   由 src/ 编译而来，已提交；Obsidian 加载的就是它
 ├── manifest.json               主题元数据：名称、版本、最低 Obsidian 版本
-├── versions.json               版本到最低 Obsidian 版本的映射，跟着 manifest 一起改
+├── versions.json               版本到最低 Obsidian 版本的映射
 ├── package.json                npm 脚本（build / watch）与 dart-sass 依赖
 ├── package-lock.json           锁住 dart-sass 版本，CI 用 npm ci 复现
 ├── README.md / README-zh.md    面向使用者的说明，英文与中文两份，内容保持一致

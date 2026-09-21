@@ -10,6 +10,8 @@ Built on [Baseline](https://github.com/aaaaalexis/obsidian-baseline)
 
 ![](img/screenshot-1.png)
 
+![](img/screenshot-2.png)
+
 </div>
 
 ## Overview
