@@ -4,7 +4,7 @@
 ![](img/hero.png)
 -->
 
-# obsidian-macos
+# Obsidian MacOS
 
 ### An Obsidian theme with both sidebars docked.
 

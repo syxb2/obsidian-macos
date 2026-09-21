@@ -4,7 +4,7 @@
 ![](img/hero.png)
 -->
 
-# obsidian-macos
+# Obsidian MacOS
 
 ### 左右边栏都贴边停靠的 Obsidian 主题。
 
