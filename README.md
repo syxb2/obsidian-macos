@@ -11,6 +11,8 @@
 _[Baseline](https://github.com/aaaaalexis/obsidian-baseline) 3.2.12 with a fixed
 configuration and the options removed — nothing to misconfigure._
 
+**English** · [简体中文](README-zh.md)
+
 </div>
 
 ## Overview
@@ -120,33 +122,3 @@ to look for in `src/`.
 
 Baseline is MIT licensed; so is this. See [`LICENSE.txt`](LICENSE.txt), which
 carries both copyright lines.
-
----
-
-## 中文说明
-
-这是基于 [Baseline](https://github.com/aaaaalexis/obsidian-baseline) 3.2.12 的衍生主题：
-把一套 Baseline Style Settings 配置固化进 CSS，并让左右边栏都贴边停靠。
-
-- 左右边栏都是普通面板：无外边距、无圆角、无阴影、与编辑器之间无分隔线
-- 关闭 Translucent window 时，边栏是浅灰底色，而不是继承白色工作区
-- 设置窗口左侧那一列同样贴边、同色
-- 没有 Style Settings 选项，样式固定，不会误改
-- 移动端与平板完全保持 Baseline 原样
-
-安装：把 `theme.css` 和 `manifest.json` 放进
-`<vault>/.obsidian/themes/obsidian-macos/`，然后在「设置 → 外观 → 主题」里选择它。
-
-本主题的源码就是 Baseline 的 SCSS：`src/` 里是同名的目录和文件，改动用改动本身的
-形式写在对应位置（左侧栏在 `src/layouts/macos.scss`，边栏底色紧挨着 Baseline 原有的
-暗色那一条）。`theme.css` 由源码编译而来，已提交，装主题不需要构建。
-
-```bash
-npm install        # 第一次要联网装 dart-sass；之后就不需要网络了
-npm run build      # 改动 src/ 之后重新生成 theme.css
-```
-
-`src/` 是从 Baseline 3.2.12 派生一次得到的，仓库里不留上游副本，构建也不联网；
-当初的派生脚本和那套配置在 [`tools/`](tools) 里，需要重新派生时按
-[`tools/README.md`](tools/README.md) 把上游 clone 到临时目录即可。
-每一处改动都列在 [`docs/customization.md`](docs/customization.md)。
