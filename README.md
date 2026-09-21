@@ -16,19 +16,25 @@ Built on [Baseline](https://github.com/aaaaalexis/obsidian-baseline).
 
 ## Overview
 
-**Both sidebars are plain panels.** They sit flush against the window edge — no
-inset, no rounded corners, no drop shadow, and no divider between them and the
-editor, so they read as part of the workspace.
+**The sidebar is part of the window.** Finder, Notes and Mail do not float their
+sidebars as cards over the window: a sidebar runs flush to the edge and fills up
+under the title bar. Both sidebars here take that shape — docked, square, no
+drop shadow.
 
-**The sidebars have a surface of their own.** With *Translucent window* off they
-no longer disappear into the white workspace: light grey in light mode, left as
-it was in dark mode. The settings window's left column is docked and coloured
-the same way.
+**Tinted surfaces, not dividers.** macOS sets a sidebar apart from its content
+with a slightly deeper fill and draws no rule between them. The same here: the
+divider between the right sidebar and the editor is gone, so both sides match,
+and with *Translucent window* off the sidebars keep a light grey surface of their
+own instead of the white workspace reading through. The settings window's left
+column is docked and coloured the same way.
 
-**One look, no knobs.** There is nothing to configure — the theme is a single
-CSS file with no plugin dependency, and it does not need Style Settings.
+**Nothing to configure.** macOS leaves the look to the system, so what you get is
+what it is meant to look like. This theme is one fixed look in the same spirit:
+no settings, no Style Settings, no plugin dependency — a single CSS file is all
+of it.
 
-**Mobile is untouched.** Phones and tablets keep their original appearance.
+**Mobile sits outside the macOS language.** Phones and tablets keep Obsidian's
+original mobile appearance; only the desktop layout is rebuilt in it.
 
 ## Installation
 
