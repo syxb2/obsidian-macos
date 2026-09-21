@@ -1,0 +1,67 @@
+name: Bug report
+description: Something looks wrong with the theme
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The theme is a frozen build of Baseline, so
+        the details below are usually what it takes to reproduce a problem.
+
+  - type: input
+    id: obsidian
+    attributes:
+      label: Obsidian version
+      placeholder: "1.13.4"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options: [macOS, Windows, Linux, iPadOS, iOS, Android]
+      multiple: true
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Theme mode
+      options: [light, dark, both]
+    validations:
+      required: true
+
+  - type: dropdown
+    id: translucency
+    attributes:
+      label: Translucent window
+      description: Settings → Appearance → Translucent window
+      options: ["off", "on"]
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happens
+      description: What you see, and where (sidebar, settings window, editor …).
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshot or CSS
+      description: |
+        A screenshot helps a lot. If you edited theme.css, paste that too.
+    validations:
+      required: false

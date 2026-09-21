@@ -1,0 +1,168 @@
+body:not(.is-mobile) {
+  --shadow-surface: 0 0 0 1px var(--background-modifier-hover);
+  --tab-outline-width: 1px;
+
+  &:not(.is-focused) {
+    --workspace-background-translucent: var(--background-secondary);
+    --tab-outline-color: transparent;
+
+    .modal.mod-settings .vertical-tab-header > div,
+    .workspace-ribbon,
+    .mod-sidedock > div {
+      opacity: 0.5;
+    }
+    .modal.mod-settings .vertical-tab-header,.mod-sidedock.mod-left-split,& .mod-sidedock.mod-right-split,& .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header {
+      background-color: var(--background-modifier-hover) !important;
+      box-shadow: none !important;
+      transition: none;
+    }
+  }
+
+  &.show-ribbon {
+    &:not(.mod-macos) .workspace-ribbon.mod-left:not(.is-collapsed),
+    &.mod-macos.is-frameless:not(.is-hidden-frameless) .workspace-ribbon.mod-left:not(.is-collapsed) {
+      margin-block: 8px;
+    }
+    &:not(.mod-macos) .workspace-ribbon.mod-left:not(.is-collapsed) .sidebar-toggle-button {
+      height: calc(var(--header-height) - 24px);
+    }
+    & .workspace-ribbon.mod-left:not(.is-collapsed) {
+      padding-left: 16px;
+    }
+    & .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+      margin-left: calc(-1 * var(--ribbon-width) + 8px);
+      padding-left: var(--ribbon-width);
+    }
+
+    .workspace-ribbon.mod-left .sidebar-toggle-button .clickable-icon:hover,
+    .workspace-ribbon.mod-left .side-dock-actions .side-dock-ribbon-action:hover {
+      box-shadow: none !important;
+      background-color: transparent !important;
+      color: var(--text-normal);
+    }
+  }
+
+  &:not(.is-translucent).theme-dark .mod-sidedock {
+    background-color: hsl(from var(--background-primary) h s calc(l - 2));
+  }
+  // 亮色下边栏也要有自己的底色：关闭 Translucent window 时工作区是纯白，
+  // 边栏本身透明，会看不出边界。（Baseline 原本只给了暗色这一半）
+  &:not(.is-tablet):not(.is-translucent).theme-light .mod-sidedock {
+    background-color: var(--background-secondary);
+  }
+  &.is-translucent .mod-sidedock {
+    background-color: rgba(from var(--background-primary) r g b / 50%) !important;
+  }
+  .mod-sidedock {
+    transition:
+      var(--anim-duration-moderate),
+      background-color 0s,
+      box-shadow 0s;
+  }
+  // Settings
+  &:not(.is-tablet) .modal.mod-settings .vertical-tab-header {
+    margin: 0;
+    box-shadow: none;
+    border-radius: 0;
+    border-inline-end: none;
+  }
+  &:not(.is-tablet).theme-light .modal.mod-settings .vertical-tab-header {
+    background-color: var(--background-secondary);
+  }
+  &:not(.is-tablet).theme-dark .modal.mod-settings .vertical-tab-header {
+    background-color: hsl(from var(--background-primary) h s calc(l - 2));
+  }
+}
+
+// Ribbon
+body:not(.is-mobile).mod-macos.is-hidden-frameless .workspace-ribbon.mod-left.is-collapsed {
+  margin-top: calc(var(--header-height) - 1px);
+  padding-top: 8px;
+  border-top: var(--tab-outline-width) solid var(--tab-outline-color);
+}
+
+// Tab style
+
+
+body.is-tablet {
+  &.theme-light {
+    --shadow-surface:
+      inset 1px 1px 2px rgba(255, 255, 255, 0.5), inset -1px -1px 2px rgba(255, 255, 255, 0.5), inset 0 4px 16px rgba(255, 255, 255, 0.025),
+      0 0 1px rgba(0, 0, 0, 0.25), 0 8px 16px 0 rgba(0, 0, 0, 0.05);
+  }
+  &.theme-dark {
+    --shadow-surface: 0 0 1px rgba(255, 255, 255, 0.3), 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+
+  .workspace {
+    background-color: var(--background-primary);
+  }
+
+  .workspace-drawer .workspace-drawer-header-name-text {
+    font-size: var(--font-ui-small);
+  }
+  .workspace-drawer .workspace-drawer-header-info {
+    color: var(--text-faint);
+  }
+
+  .workspace-drawer:not(.is-pinned) {
+    background-color: var(--modal-background);
+    box-shadow: var(--shadow-xs);
+    backdrop-filter: var(--blur-l);
+  }
+
+  .workspace-drawer.is-pinned.mod-left {
+    background-color: var(--raised-background);
+    box-shadow: var(--shadow-surface);
+    border: none;
+    margin: calc(var(--safe-area-inset-top) + 8px) 0 8px 8px;
+    border-radius: calc(env(safe-area-inset-bottom) - 8px);
+    height: auto;
+
+    .workspace-drawer-ribbon,
+    .workspace-drawer-inner {
+      padding-block: 0px 16px;
+    }
+  }
+
+  .modal.mod-settings .vertical-tab-header {
+    margin: 8px 0 8px 8px;
+    border-radius: var(--radius-m);
+    border: none;
+    z-index: 1;
+    background-color: var(--raised-background);
+    box-shadow: var(--shadow-surface);
+  }
+}
+
+// macOS specific
+body .workspace-split.mod-root .workspace-tab-container {
+  border-radius: 0;
+}
+body:not(.is-mobile) {
+  &:not(.is-hidden-frameless) {
+    .titlebar {
+      background-color: var(--background-primary);
+    }
+    .mod-sidedock.mod-right-split > .workspace-leaf-resize-handle {
+      top: 0;
+    }
+  }
+
+  // Editor panel
+  &.is-translucent .mod-root {
+    background-color: var(--background-primary) !important;
+  }
+  &.is-translucent:not(.is-focused) .workspace {
+    background-color: var(--background-primary);
+  }
+  &:not(.is-translucent) .workspace {
+    background-color: var(--background-primary);
+  }
+}
+
+body.is-tablet {
+  .workspace-drawer.is-pinned.mod-right {
+    border-width: var(--divider-width);
+  }
+}

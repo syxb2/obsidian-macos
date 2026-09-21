@@ -1,0 +1,22 @@
+
+
+
+
+body {
+  .nav-files-container > div {
+    --nav-item-background-active: var(--interactive-accent);
+    --nav-item-color-active: var(--text-on-accent);
+  }
+
+  
+
+  &:not(.is-mobile) .nav-files-container>div {
+    --nav-item-background-hover: transparent;
+    --nav-item-background-active: var(--background-modifier-hover);
+    --nav-item-color: var(--text-normal);
+    --nav-item-color-hover: var(--text-normal);
+    --nav-item-color-active: var(--text-accent);
+  }
+
+  
+}

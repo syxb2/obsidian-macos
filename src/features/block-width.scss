@@ -1,0 +1,45 @@
+body {
+  --file-line-width: var(--line-width);
+  --line-width: 700px;
+}
+
+body {
+  --line-width-wide: 50rem;
+
+  .wide {
+    --file-line-width: min(100cqw, var(--line-width-wide));
+  }
+  .max {
+    --file-line-width: 100%;
+  }
+
+  --block-width-wide: min(100cqw, var(--line-width-wide));
+  --block-width-max: calc(100cqw - (var(--file-margins-x) * 2));
+  --block-width-offset: calc(-1 * var(--file-margins-x));
+
+  .mod-root .workspace-tab-container {
+    container-type: inline-size;
+  }
+
+  // Table
+  
+  
+  
+  
+
+  // Bases
+  
+  
+  
+  
+
+  // Image
+  
+  .cm-content .image-embed {
+    display: block;
+  }
+
+  
+  
+  
+}

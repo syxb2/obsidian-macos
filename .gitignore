@@ -1,0 +1,34 @@
+# 注意：下面这些是主题本身，必须提交，别加到这个文件里——
+#   theme.css         Obsidian 直接加载的样式（也是发 release 时上传的文件）
+#   manifest.json     主题元数据，Obsidian 靠它识别主题
+#   versions.json     版本 → 最低 Obsidian 版本
+#   package-lock.json 锁住 dart-sass 版本，CI 用 npm ci 复现
+
+# macOS
+.DS_Store
+._*
+.AppleDouble
+
+# 编辑器 / IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# Node：dart-sass 等本地依赖（npm install 产生）
+node_modules/
+npm-debug.log*
+.npm/
+
+# 编译残留
+build/
+*.css.map
+
+# Python：tools/ 里的派生脚本
+__pycache__/
+*.pyc
+.venv/
+
+# 把这个目录当 Obsidian 仓库打开时会产生
+.obsidian/

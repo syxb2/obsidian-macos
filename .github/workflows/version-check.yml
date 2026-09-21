@@ -1,0 +1,72 @@
+name: Check metadata and theme
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: manifest.json and versions.json agree
+        run: |
+          python3 - <<'PY'
+          import json
+
+          manifest = json.load(open("manifest.json"))
+          versions = json.load(open("versions.json"))
+          version = manifest["version"]
+
+          assert version in versions, (
+              f"manifest.json version {version} is missing from versions.json")
+          assert versions[version] == manifest["minAppVersion"], (
+              "minAppVersion differs between manifest.json and versions.json")
+
+          newest = max(versions, key=lambda v: [int(p) for p in v.split(".")])
+          assert newest == version, (
+              f"manifest.json is {version} but versions.json goes up to {newest}")
+
+          print(f"ok: {manifest['name']} {version} needs Obsidian "
+                f"{manifest['minAppVersion']}")
+          PY
+
+      - name: theme.css is intact
+        run: |
+          test -s theme.css
+          grep -q "obsidian-macos" theme.css
+          grep -q "Baseline 3.2.12" theme.css
+          python3 - <<'PY'
+          css = open("theme.css", encoding="utf-8").read()
+          assert not css.startswith("\ufeff"), "theme.css starts with a BOM"
+          assert css.count("{") == css.count("}"), "unbalanced braces"
+          assert "@settings" not in css, (
+              "theme.css carries a Style Settings block - the options are "
+              "supposed to be gone")
+          print(f"ok: {len(css)} bytes, braces balanced, no Style Settings block")
+          PY
+
+      - name: the options are gone from src/
+        run: |
+          test -s src/theme.scss
+          test ! -e src/app/style-settings.scss
+          if grep -rq "@settings" src/; then
+            echo "::error::src/ carries a Style Settings definition again - the theme is supposed to need no plugin"
+            exit 1
+          fi
+          echo "ok: src/ has no Style Settings block and no settings partial"
+
+      - name: theme.css is what src/ compiles to
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          if ! git diff --quiet -- theme.css; then
+            echo "::error::theme.css differs from the compiled src/. Run npm run build and commit the result."
+            git diff --stat -- theme.css
+            exit 1
+          fi
+          echo "ok: theme.css matches src/"

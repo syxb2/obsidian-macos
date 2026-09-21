@@ -1,0 +1,97 @@
+body {
+  --input-height: 32px;
+
+  --radius-modifier: 1;
+  --input-radius: var(--radius-s);
+  --radius-s: calc(8px * var(--radius-modifier));
+  --radius-m: calc(12px * var(--radius-modifier));
+  --radius-l: calc(20px * var(--radius-modifier));
+  --radius-xl: calc(28px * var(--radius-modifier));
+  --clickable-icon-radius: var(--radius-s) !important;
+  --input-radius: var(--radius-s) !important;
+  --search-input-radius: var(--input-radius) !important;
+  --search-input-corner-shape: var(--corner-shape);
+
+  --background-modifier-form-field: var(--interactive-normal);
+
+  /* 0 when <1, 1 when >=1 */
+  --radius-modifier-check: clamp(0, (var(--radius-modifier) - 1) * 10000 + 1, 1);
+
+  --button-radius: calc((8px * var(--radius-modifier)) * (1 - var(--radius-modifier-check)) + 100vh * var(--radius-modifier-check));
+}
+
+.theme-light {
+  --input-shadow: inset 0 0 0 var(--input-border-width) var(--background-modifier-border);
+  --input-shadow-hover: inset 0 0 0 var(--input-border-width) var(--background-modifier-border-hover);
+
+  &.mod-macos {
+    --interactive-normal: var(--color-base-00);
+    --interactive-hover: var(--color-base-10);
+  }
+}
+.theme-dark {
+  --input-shadow: inset 0 0 0 var(--input-border-width) var(--background-modifier-border);
+  --input-shadow-hover: inset 0 0 0 var(--input-border-width) var(--background-modifier-border-hover);
+
+  --background-modifier-form-field: var(--interactive-normal);
+
+  &.mod-macos {
+    --interactive-normal: var(--color-base-30);
+    --interactive-hover: var(--color-base-35);
+  }
+}
+
+
+
+// Button
+button,
+.clickable-icon,
+select,
+.dropdown {
+  transition:
+    var(--anim-duration-moderate) var(--anim-motion-baseline),
+    background-color var(--anim-duration-fast);
+}
+
+button:where(:not(.clickable-icon, .ant-switch, .workspace-leaf-content:not([data-type="markdown"]) button, .copy-code-button)) {
+  padding: 16px;
+  display: inline-flex;
+}
+
+.clickable-icon {
+  corner-shape: round;
+  padding: 8px;
+  max-height: 100%;
+}
+
+// Toggle
+
+
+body.obsidian-app .checkbox-container {
+  transition: var(--anim-duration-moderate);
+  box-shadow: none;
+
+  &:focus-within {
+    outline: none;
+  }
+
+  &::after {
+    transition:
+      var(--anim-duration-moderate) var(--anim-motion-baseline),
+      background-color 0s;
+  }
+  &:active:after {
+    box-shadow: none;
+    width: calc(var(--toggle-thumb-width) + var(--toggle-border-width));
+    height: var(--toggle-thumb-height);
+    margin-top: var(--toggle-border-width);
+  }
+  &.is-enabled:active:after {
+    left: calc(var(--toggle-border-width) * -1);
+  }
+}
+
+// Slider
+input[type="range"]::-webkit-slider-thumb {
+  box-shadow: none;
+}

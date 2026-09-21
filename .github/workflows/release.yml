@@ -1,0 +1,37 @@
+name: Release Obsidian theme
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check the tag against manifest.json
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          version=$(python3 -c "import json;print(json.load(open('manifest.json'))['version'])")
+          if [ "$version" != "${TAG_NAME#v}" ]; then
+            echo "::error::manifest.json says $version, the tag is $TAG_NAME"
+            exit 1
+          fi
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG_NAME" \
+            --title="$TAG_NAME" \
+            --generate-notes \
+            --draft \
+            manifest.json theme.css

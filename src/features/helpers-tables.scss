@@ -1,0 +1,43 @@
+/* Table helper classes for alternate styles */
+/* MIT License | Copyright (c) Stephan Ango (@kepano) */
+
+.table-small {
+  --table-text-size: var(--font-smaller);
+}
+.table-tiny {
+  --table-text-size: var(--font-smallest);
+}
+
+
+
+
+
+
+
+
+.table-center {
+  .markdown-preview-sizer table,
+  .table-wrapper {
+    margin: 0 auto;
+  }
+}
+
+
+.table-nowrap-first {
+  table {
+    thead > tr > th:first-child,
+    tbody > tr > td:first-child {
+      --table-white-space: nowrap;
+    }
+  }
+}
+
+.trim-cols {
+  --table-white-space: normal;
+}
+
+
+
+
+
+
