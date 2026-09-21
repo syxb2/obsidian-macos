@@ -33,8 +33,10 @@ what it is meant to look like. This theme is one fixed look in the same spirit:
 no settings, no Style Settings, no plugin dependency — a single CSS file is all
 of it.
 
-**Mobile sits outside the macOS language.** Phones and tablets keep Obsidian's
-original mobile appearance; only the desktop layout is rebuilt in it.
+**Mobile shares the same configuration.** Phones and tablets render Baseline's
+mobile styles with the same frozen values — colours, fonts, callouts and the
+rest. The sidebar rules this theme adds are desktop-only, so mobile is left
+alone; it will look the same with or without Style Settings installed.
 
 ## Installation
 

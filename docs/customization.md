@@ -102,7 +102,13 @@ Baseline 的样式挂在 Style Settings 插件往 `<body>` 上加的 231 个类�
 
 桌面改动都在 `body:not(.is-mobile)` 段内，并且新增的两条还额外排除了 `.is-tablet`；
 `src/app/mobile.scss` 与 `src/layouts/macos.scss` 里的 `body.is-tablet` 段没有改动。
-移动端与平板走 Baseline 原有规则，也不可自定义。
+所以移动端与平板的规则仍是 Baseline 的原文，本主题没有新增任何一条。
+
+不过移动端的样子并不是 Baseline 的默认样子：第二节那份固化配置里，配色、字体、
+标注、代码块、复选框圆角、标题字号这些取值都写在 `body` / `.theme-light` /
+`.theme-dark` 这类全局作用域里，移动端一并生效。换句话说，移动端等于「Baseline 的
+移动端样式 + 原来那套 Style Settings 取值」，与以前开着 Style Settings 插件时一致；
+区别只在于现在不需要插件，也不可自定义。
 
 ## 五、想改的话
 
