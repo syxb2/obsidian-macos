@@ -101,10 +101,9 @@ obsidian-macos/
 ├── img/                        README 用的截图
 │   ├── README.md               截图清单与拍摄建议
 │   └── screenshot-1.png        README 顶部那张
-└── .github/
-    ├── workflows/release.yml         打 tag 时建 release，上传 manifest.json 与 theme.css
-    ├── workflows/version-check.yml   CI：元数据一致性、theme.css 完整性、src/ 不含设置面板、产物与源码一致
-    └── ISSUE_TEMPLATE/               issue 模板
+└── .github/workflows/
+    ├── release.yml          打 tag 时建 release，上传 theme.css、manifest.json 与打包的 zip
+    └── version-check.yml    CI：元数据一致性、theme.css 完整性、src/ 不含设置面板、产物与源码一致
 ```
 
 `src/features/colorful-headings.scss` 目前是个空壳：外层 `@media` 里没有任何规则，

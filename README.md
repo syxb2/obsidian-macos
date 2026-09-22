@@ -22,8 +22,11 @@ This theme brings the design language of native macOS apps into Obsidian: the le
 
 **Manual**
 
-1. Download `theme.css` and `manifest.json`.
-2. Put them in `<your vault>/.obsidian/themes/obsidian-macos/`.
+1. Download `obsidian-macos-<version>.zip` from
+   [Releases](https://github.com/syxb2/obsidian-macos/releases), or take `theme.css` and
+   `manifest.json` from the repository root.
+2. Unzip it into `<your vault>/.obsidian/themes/`, so that `theme.css` and `manifest.json`
+   end up in `<your vault>/.obsidian/themes/obsidian-macos/`.
 3. Open **Settings → Appearance → Themes** and pick `obsidian-macos`.
 
 If it does not show up, reload the app with `Cmd`/`Ctrl` + `R`.

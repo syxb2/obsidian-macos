@@ -22,8 +22,10 @@
 
 **手动**
 
-1. 下载 `theme.css` 和 `manifest.json`。
-2. 放进 `<你的库>/.obsidian/themes/obsidian-macos/`。
+1. 从 [Releases](https://github.com/syxb2/obsidian-macos/releases) 下载
+   `obsidian-macos-<版本>.zip`，也可以直接拿仓库根目录的 `theme.css` 和 `manifest.json`。
+2. 解压到 `<你的库>/.obsidian/themes/`，让 `theme.css` 和 `manifest.json` 落在
+   `<你的库>/.obsidian/themes/obsidian-macos/` 里。
 3. 打开 **设置 → 外观 → 主题**，选择 `obsidian-macos`。
 
 如果列表里没有，用 `Cmd`/`Ctrl` + `R` 重载一下应用。
