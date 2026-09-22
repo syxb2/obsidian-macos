@@ -1,0 +1,90 @@
+# 打 v<版本> 的 tag 时：重新编译 theme.css、确认它与 src/ 一致，
+# 然后建 release 并上传 theme.css、manifest.json 与打包好的 zip。
+# 手动安装的用户下 zip 解压到 .obsidian/themes/ 即可。
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# 建 release 要写权限。GH_TOKEN 用内置的 GITHUB_TOKEN，不需要另配 secret；
+# 仓库的 Settings → Actions → General 里 Workflow permissions 保持默认即可。
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 装 Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖（dart-sass）
+        run: npm ci
+
+      - name: 校验 tag 与 manifest.json 的版本
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          manifest_version="$(node -p 'require("./manifest.json").version')"
+          echo "tag 去掉 v：$tag_version / manifest.json：$manifest_version"
+          if [ "$tag_version" != "$manifest_version" ]; then
+            echo "::error::tag $GITHUB_REF_NAME 去掉 v 之后是 $tag_version，与 manifest.json 的 $manifest_version 不一致"
+            exit 1
+          fi
+          echo "VERSION=$manifest_version" >> "$GITHUB_ENV"
+
+      - name: 编译主题
+        run: npm run build
+
+      - name: 确认 theme.css 与 src/ 编译结果一致
+        run: |
+          if ! git diff --exit-code -- theme.css; then
+            echo "::error::theme.css 与 src/ 的编译结果不一致，先本地跑 npm run build 并提交"
+            exit 1
+          fi
+
+      - name: 打包 zip
+        run: |
+          mkdir -p build/obsidian-macos
+          cp theme.css manifest.json build/obsidian-macos/
+          cd build
+          zip -r "obsidian-macos-${VERSION}.zip" obsidian-macos
+          ls -l
+
+      - name: 从 changelog 里取这一版的说明
+        run: |
+          mkdir -p build
+          awk -v v="$VERSION" '
+            $1 == "##" && $2 == v { found = 1; next }
+            found && $1 == "##" { exit }
+            found { print }
+          ' docs/changelog.md > build/release-notes.md
+          if [ ! -s build/release-notes.md ]; then
+            printf 'obsidian-macos %s\n' "$VERSION" > build/release-notes.md
+          fi
+
+      - name: 建 release 并上传产物
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          assets="theme.css manifest.json build/obsidian-macos-${VERSION}.zip"
+          # 同一个 tag 重跑时：release 已存在就更新说明并覆盖上传，不再新建
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release edit "$GITHUB_REF_NAME" \
+              --title "obsidian-macos $VERSION" \
+              --notes-file build/release-notes.md
+            gh release upload "$GITHUB_REF_NAME" --clobber $assets
+          else
+            gh release create "$GITHUB_REF_NAME" \
+              --title "obsidian-macos $VERSION" \
+              --notes-file build/release-notes.md \
+              $assets
+          fi
