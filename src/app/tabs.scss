@@ -110,6 +110,23 @@ body:not(.is-phone) .workspace .mod-root .workspace-tabs:not(.mod-stacked) {
     margin-bottom: 0;
   }
 }
+
+// 选项卡与标签栏按钮：胶囊形（见 docs/customization.md 第 9 条）
+// 两端全圆，也就是把原来的圆角矩形改成「长条的椭圆形」。
+// 边栏顶部那几处（选项卡本体、它们所在的那条分组底、收起边栏的按钮）用的都是
+// --clickable-icon-radius，所以在标签栏容器里把这个变量重新定义一次就够了；
+// 编辑器的选项卡走的是 --tab-radius-active，得单独写。
+body:not(.is-mobile) {
+  .workspace-tab-header-container {
+    --clickable-icon-radius: 100vh;
+  }
+
+  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header,
+  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
+    border-radius: 100vh;
+  }
+}
+
 body.is-tablet {
   --header-height: 60px !important;
 

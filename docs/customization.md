@@ -10,7 +10,7 @@
 仓库里不留上游副本；需要对照或重新派生时按
 [`../tools/README.md`](../tools/README.md) 把它 clone 到临时目录。
 
-## 一、相对 Baseline 的八处源码改动
+## 一、相对 Baseline 的九处源码改动
 
 ### 1. 左侧栏不再是浮卡（`src/layouts/macos.scss`）
 
@@ -208,6 +208,32 @@ Baseline 给弹窗（设置窗口也在内）写了入场动画，而且写了�
 `@keyframes modalIn` 保留：`.prompt`（`src/app/prompt.scss`，快速切换 / 命令面板那一层）
 还在用它，本主题没有改那部分。
 
+### 9. 选项卡与标签栏按钮改成胶囊形（`src/app/tabs.scss`）
+
+Baseline 里这些位置都是小圆角的矩形：边栏顶部的选项卡（连同它们底下那条分组底、收起边栏的
+按钮）用的是 `--clickable-icon-radius`，编辑器标签栏里的选项卡用的是 `--tab-radius-active`。
+
+桌面端把它们都改成两端全圆，也就是「长条的椭圆形」：
+
+```scss
+body:not(.is-mobile) {
+  .workspace-tab-header-container {
+    --clickable-icon-radius: 100vh;
+  }
+  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header,
+  .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
+    border-radius: 100vh;
+  }
+}
+```
+
+编辑器的选项卡走的是 `--tab-radius-active`，所以只能单独写一条；边栏那几处共用
+`--clickable-icon-radius`，把变量在标签栏容器里重定义一次就够，方形的图标按钮（边栏顶部的
+选项卡本体、新建标签、标签列表、收起边栏）随之变成两端全圆的圆点。
+
+变量只定义在 `.workspace-tab-header-container` 里面，别处的图标按钮（文件浏览器的操作行、
+视图右上角那一排）不受影响；移动端与平板不在 `body:not(.is-mobile)` 范围内，保持 Baseline 原样。
+
 ## 二、被固化的配置
 
 Baseline 的样式挂在 Style Settings 插件往 `<body>` 上加的 231 个类名上，还有一批值
@@ -282,7 +308,7 @@ npm run watch    # 或者边改边编译
    `git clone --depth 1 https://github.com/aaaaalexis/obsidian-baseline.git /tmp/baseline`。
 2. 跑 `python3 tools/derive-src.py --source /tmp/baseline`（只报告不写入），
    看有哪些文件会被丢弃、哪些选择器会被改写。
-3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面八处改动
+3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面九处改动
    （工具会覆盖 `src/`，`app/config.scss` 需要重新加回）。
 4. `npm run build`，对比 `theme.css` 的差异。
 
