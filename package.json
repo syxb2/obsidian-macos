@@ -1,6 +1,6 @@
 {
   "name": "obsidian-macos",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A Baseline 3.2.12 theme with both sidebars docked and the options removed",
   "private": true,
   "scripts": {
