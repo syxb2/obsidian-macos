@@ -10,6 +10,7 @@
 | `README.md` | 本页。docs/ 里有什么，以及整个仓库的目录怎么摆、每个文件做什么 |
 | [`customization.md`](customization.md) | 相对 Baseline 3.2.12 的改造记录：四处源码改动、固化的配置取值、删掉的上游文件、移动端说明、常见改动的位置、换基线版本的步骤。改样式之后要同步这里 |
 | [`changelog.md`](changelog.md) | 版本记录，一次发版一条。改它时要连带动版本号，清单见下面「改 changelog 时要一起改的」 |
+| [`releasing.md`](releasing.md) | 发版操作说明：从编译、改版本号、补 changelog 一路到打 tag、验收和出错排查。每次发版照它走 |
 | [`baseline-config.json`](baseline-config.json) | 当初固化的那套 Style Settings 取值（26 项），键名是 Baseline 的设置项 id。它回答「现在这个样子是从哪套配置来的」 |
 
 ## 改 changelog 时要一起改的
@@ -28,6 +29,8 @@
 
 面向使用者的改动写进 changelog，源码层面的事（工具、工作流、目录调整）写进
 [`customization.md`](customization.md)。
+
+完整的发版流程（本地检查、打 tag、验收、出错的排查）见 [`releasing.md`](releasing.md)。
 
 ## 仓库目录
 
