@@ -10,7 +10,7 @@
 仓库里不留上游副本；需要对照或重新派生时按
 [`../tools/README.md`](../tools/README.md) 把它 clone 到临时目录。
 
-## 一、相对 Baseline 的九处源码改动
+## 一、相对 Baseline 的十处源码改动
 
 ### 1. 左侧栏不再是浮卡（`src/layouts/macos.scss`）
 
@@ -212,14 +212,10 @@ Baseline 给弹窗（设置窗口也在内）写了入场动画，而且写了�
 
 Baseline 里这些位置都是小圆角的矩形：边栏顶部的选项卡（连同它们底下那条分组底、收起边栏的
 按钮）用的是 `--clickable-icon-radius`，编辑器标签栏里的选项卡用的是 `--tab-radius-active`。
-
-桌面端把它们都改成两端全圆，也就是「长条的椭圆形」：
+后者跟按钮不是同一个 token，所以单独写一条：
 
 ```scss
 body:not(.is-mobile) {
-  .workspace-tab-header-container {
-    --clickable-icon-radius: 100vh;
-  }
   .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header,
   .mod-root .workspace-tabs:not(.mod-stacked) .workspace-tab-header-inner {
     border-radius: 100vh;
@@ -227,12 +223,39 @@ body:not(.is-mobile) {
 }
 ```
 
-编辑器的选项卡走的是 `--tab-radius-active`，所以只能单独写一条；边栏那几处共用
-`--clickable-icon-radius`，把变量在标签栏容器里重定义一次就够，方形的图标按钮（边栏顶部的
-选项卡本体、新建标签、标签列表、收起边栏）随之变成两端全圆的圆点。
+边栏那几处共用 `--clickable-icon-radius`，跟下面第 10 条里的按钮一起改掉了。
 
-变量只定义在 `.workspace-tab-header-container` 里面，别处的图标按钮（文件浏览器的操作行、
-视图右上角那一排）不受影响；移动端与平板不在 `body:not(.is-mobile)` 范围内，保持 Baseline 原样。
+### 10. 按钮统一成胶囊形（`src/elements/cupertino.scss`）
+
+Baseline 把两类按钮的圆角分成两个 token，而且两份取值互相打架：
+
+```scss
+// elements/baseline.scss
+--clickable-icon-radius: var(--radius-s) !important; // 8px，带 !important，把下面那条压住了
+// elements/cupertino.scss
+--clickable-icon-radius: 100vh;
+--button-radius: var(--input-radius); // 也是 8px
+```
+
+core 自己还有一条 `.mod-macos { --clickable-icon-radius: var(--radius-m) }`，类选择器，
+权重比 `body` 高。所以桌面端统一改成：
+
+```scss
+body:not(.is-mobile):not(.is-tablet) {
+  --clickable-icon-radius: 100vh !important;
+  --button-radius: 100vh;
+}
+```
+
+于是所有图标按钮（功能区、视图右上角那一排、文件浏览器的操作行、设置里的按钮、标签栏里的
+新建标签 / 标签列表 / 收起边栏）和所有文本按钮（`button`、`.text-icon-button`，含各个弹窗的
+按钮）都变成两端全圆，和顶部那些选项卡统一。
+
+要盖过 Baseline 那条必须带 `!important`；要盖过 core 的 `.mod-macos`，选择器得写得比它具体。
+`--button-radius` 这一条其实是回到 Baseline 的默认：它自己的公式在 `--radius-modifier >= 1`
+（本主题就是 1）时算出来正是 `100vh`，被 cupertino 那份 `--input-radius` 改成了 8px。
+
+移动端与平板排除在外，仍是 Baseline 原样。
 
 ## 二、被固化的配置
 
@@ -308,7 +331,7 @@ npm run watch    # 或者边改边编译
    `git clone --depth 1 https://github.com/aaaaalexis/obsidian-baseline.git /tmp/baseline`。
 2. 跑 `python3 tools/derive-src.py --source /tmp/baseline`（只报告不写入），
    看有哪些文件会被丢弃、哪些选择器会被改写。
-3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面九处改动
+3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面十处改动
    （工具会覆盖 `src/`，`app/config.scss` 需要重新加回）。
 4. `npm run build`，对比 `theme.css` 的差异。
 
