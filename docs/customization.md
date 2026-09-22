@@ -10,7 +10,7 @@
 仓库里不留上游副本；需要对照或重新派生时按
 [`../tools/README.md`](../tools/README.md) 把它 clone 到临时目录。
 
-## 一、相对 Baseline 的四处源码改动
+## 一、相对 Baseline 的七处源码改动
 
 ### 1. 左侧栏不再是浮卡（`src/layouts/macos.scss`）
 
@@ -56,6 +56,26 @@ Baseline 只处理了暗色，而且要的是「比编辑器深一档」：
 暗色下比编辑器浅一点点，与 macOS 上边栏和内容的关系一致。设置窗口左侧那一列
 取同一组值，跟主边栏保持同色。
 
+左侧的功能区（ribbon）自己不带底色（Baseline 把 `--ribbon-background` 设成
+`transparent`），露出来的是它底下的工作区，于是开着 Show ribbon 时那一栏总跟旁边差一个
+色阶。所以这几条规则里加上了 `.workspace-ribbon.mod-left`，按「旁边是谁」分两种：
+
+- 左边栏开着（功能区不带 `is-collapsed`）：跟边栏同色——亮色 `--background-secondary`、
+  暗色 `--background-primary-alt`、半透明时 50% 的 `--background-primary`、
+  窗口失焦时 `--background-modifier-hover`（和边栏那几条一一对应）；
+- 左边栏收起（功能区带 `is-collapsed`）：它右边就是编辑器，这一栏取
+  `--background-primary`，跟编辑器连成一片，否则编辑器是白的、那一栏是灰的。
+
+顺带把失焦时的 `opacity: 0.5` 从 `.workspace-ribbon` 挪到 `.workspace-ribbon > *`：
+边栏失焦时只有内容变淡、底色照旧，功能区也一样，两边才不会又岔开。
+
+还有一处过渡要对齐：`.mod-sidedock` 的 `transition` 里 `background-color` 是 0s
+（底色瞬间切、不渐变），而功能区在 `app/sidedock.scss` 里写的是整条 320ms，
+于是失焦 / 聚焦切换时边栏底色已经切完、功能区还在渐变，看起来「不同步」。
+`src/layouts/macos.scss` 里给功能区补了一条
+`transition: var(--anim-duration-moderate), background-color 0s !important`，
+只把底色提到 0s，宽度、内边距这些照旧走动画。
+
 ### 3. 去掉右侧栏与编辑器之间的分割线（`src/layouts/macos.scss`）
 
 Baseline 只给右侧栏的拖拽热区上了分隔线色，左侧栏是透明的：
@@ -75,6 +95,85 @@ Baseline 的设置窗口左侧那一列也是浮卡（`margin: 8px 0 8px 8px` + 
 `--background-secondary`，暗色 `--background-primary` 再暗 2%）。
 
 平板与手机上的那一份（`body.is-tablet` 段里）**原样保留**。
+
+### 5. 打开 Show ribbon 时的左边栏与功能区（`src/layouts/macos.scss`）
+
+Baseline 在 macOS 布局里还有一段「把左边栏拉到功能区底下」的写法，挂在 `show-ribbon` 上：
+
+```scss
+.mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
+  margin-left: calc(-1 * var(--ribbon-width) + 8px);
+  padding-left: var(--ribbon-width);
+}
+.workspace-ribbon.mod-left:not(.is-collapsed) { padding-left: 16px; }
+```
+
+它是为上面第 1 条里那张浮卡准备的：`+ 8px` 正好对齐卡片的 `margin-left: 8px`，
+`padding-left` 让卡片内容让开功能区那一栏（图标则跟着 16px 贴过去）。浮卡删掉之后，
+这段只剩两个后果——左边栏左边缘到窗口还留着 8px 的缝（看着就像卡片仍悬在那儿，
+这条缝的颜色是工作区底色，和边栏自身的底色不一样），文件浏览器又被挤窄一整栏 44px。
+
+所以整段去掉：功能区自己占左边一栏，左边栏从它右边开始，跟「收起左边栏」时完全一样；
+图标回到 `--ribbon-padding` 的 4px，在那一栏里居中，开关左边栏时不会再横移。
+
+同一处还删掉了三样给浮卡/浮条留的定位：`margin-block: 8px`（非 macOS 与
+macOS 的 frameless 形态，让功能区自己缩在中间）和
+`body:not(.is-mobile).mod-macos.is-hidden-frameless .workspace-ribbon.mod-left.is-collapsed`
+里的 `margin-top: calc(var(--header-height) - 1px)`、`padding-top: 8px` 与那条
+`border-top`。最后一条现在改成对两种形态都生效的
+
+```scss
+body:not(.is-mobile).mod-macos.is-hidden-frameless .workspace-ribbon.mod-left {
+  margin-top: 0;
+  padding-top: calc(var(--header-height) + 8px);
+  border-top: none;
+}
+```
+
+功能区于是铺满整个窗口高度，连窗口左上角那一块（红绿灯所在处）也跟边栏同色；
+图标位置和原来一样（原来靠 margin 让开标题栏，现在换成等量的 padding）。
+
+### 6. 去掉边栏打开 / 关闭时的缩放动画（`src/app/sidedock.scss`）
+
+Baseline 给边栏里的叶子加了一段入场动画：每次开关左右边栏，文件浏览器这些内容都会从
+95% 放大到 100%，顺带从透明淡入。
+
+```scss
+@keyframes workspaceLeafIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+.mod-sidedock .workspace-leaf:not([style*="display: none"]) {
+  animation: workspaceLeafIn var(--anim-duration-moderate) var(--anim-motion-baseline) forwards;
+}
+```
+
+Obsidian 原生开关边栏时内容是直接出现的，没有这段动画，所以规则和只服务于它的
+`@keyframes` 一起删掉。它本来就写在 `body:not(.is-mobile)` 块里，移动端与平板不受影响。
+
+### 7. 左边栏的内容也「从自己那一侧滑进来」（`src/app/sidedock.scss`）
+
+开关边栏时 Obsidian 只动画边栏容器的宽度（`width: 0 ↔ 设定值`，140ms、
+`var(--anim-motion-swing)`），容器里的内容是被钉在容器左边缘上的。于是两边观感不同：
+
+- 右边栏：容器贴着窗口右侧，宽度变化时动的是它的**左**边缘，内容跟着一起滑 ——
+  打开时看起来是从右侧进入；
+- 左边栏：容器贴着功能区，宽度变化时动的是它的**右**边缘，左边缘不动，内容又钉在左边缘
+  上，于是内容原地不动、只是被慢慢露出来，像「长出来」而不是滑进来。
+
+把左侧栏的内容改钉到它那条会动的边缘（右边缘）上，滑动方向就镜像过来了：
+
+```scss
+body:not(.is-mobile) .workspace-split.mod-left-split.mod-horizontal {
+  align-items: flex-end;
+}
+```
+
+边栏的 split 是 `mod-horizontal`（`flex-direction: column`），`align-items` 管的正是水平
+方向；静止时容器与内容同宽，这两种对齐看不出差别，所以拖拽调宽之类的状态不受影响。
+移动端的边栏是抽屉（不是 `workspace-split`），这条规则碰不到它。
 
 ## 二、被固化的配置
 
@@ -150,7 +249,7 @@ npm run watch    # 或者边改边编译
    `git clone --depth 1 https://github.com/aaaaalexis/obsidian-baseline.git /tmp/baseline`。
 2. 跑 `python3 tools/derive-src.py --source /tmp/baseline`（只报告不写入），
    看有哪些文件会被丢弃、哪些选择器会被改写。
-3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面四处改动
+3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面七处改动
    （工具会覆盖 `src/`，`app/config.scss` 需要重新加回）。
 4. `npm run build`，对比 `theme.css` 的差异。
 

@@ -19,13 +19,6 @@ body.is-mobile {
   --nav-item-children-margin-start: 12px;
 }
 
-@keyframes workspaceLeafIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-}
-
 .sidebar-toggle-icon-inner {
   transition: var(--anim-duration-moderate) var(--anim-motion-baseline);
 }
@@ -129,8 +122,16 @@ body:not(.is-mobile) {
   .mod-sidedock .workspace-leaf {
     background-color: transparent;
   }
-  .mod-sidedock .workspace-leaf:not([style*="display: none"]) {
-    animation: workspaceLeafIn var(--anim-duration-moderate) var(--anim-motion-baseline) forwards;
+
+  // 让左边栏的内容也「从自己那一侧滑进来」。
+  // 开关边栏时 Obsidian 只动画容器的宽度，而容器里的内容被钉在容器的左边缘上：
+  // 右边栏的容器左边缘会跟着宽度移动，内容就一起滑进来（看起来从右侧出现）；
+  // 左边栏的容器左边缘是固定的、动的是右边缘，内容又钉在左边缘上，于是它原地不动、
+  // 只是被慢慢露出来，两边观感对不上。把左侧栏的内容改钉到活动的右边缘，滑入方向就
+  // 镜像过来：打开时从左边进入、收起时往左边退出。静止时容器与内容同宽，这条不产生
+  // 任何影响，所以也不会打扰拖拽调宽。
+  .workspace-split.mod-left-split.mod-horizontal {
+    align-items: flex-end;
   }
 
   // Sidedock padding
@@ -238,4 +239,3 @@ body:not(.is-mobile) .mod-sidedock.mod-left-split {
 }
 
 // Desktop sidedock: Style Settings
-

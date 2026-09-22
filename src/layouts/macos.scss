@@ -7,7 +7,7 @@ body:not(.is-mobile) {
     --tab-outline-color: transparent;
 
     .modal.mod-settings .vertical-tab-header > div,
-    .workspace-ribbon,
+    .workspace-ribbon > *,
     .mod-sidedock > div {
       opacity: 0.5;
     }
@@ -19,19 +19,21 @@ body:not(.is-mobile) {
   }
 
   &.show-ribbon {
-    &:not(.mod-macos) .workspace-ribbon.mod-left:not(.is-collapsed),
-    &.mod-macos.is-frameless:not(.is-hidden-frameless) .workspace-ribbon.mod-left:not(.is-collapsed) {
-      margin-block: 8px;
-    }
     &:not(.mod-macos) .workspace-ribbon.mod-left:not(.is-collapsed) .sidebar-toggle-button {
       height: calc(var(--header-height) - 24px);
     }
+    // 左边栏贴边之后（见 docs/customization.md 第 1 条），功能区不再叠到它身上。
+    // Baseline 那对
+    //   margin-left: calc(-1 * var(--ribbon-width) + 8px)   +   padding-left: var(--ribbon-width)
+    // 是为浮卡写的：先把卡片拉到功能区底下，再让卡片内容让开一栏。卡片删掉之后，它只剩两个后果
+    // ——左边栏左边缘多出一条 8px 的缝（那正是浮卡原来的外边距，看起来像卡片在悬浮），
+    // 文件浏览器又被挤窄了一栏。现在功能区自己占左边一栏，左边栏从它右边开始，
+    // 跟「收起左边栏」时完全一样。
+    //
+    // 图标则回到 --ribbon-padding 的居中位置（左右各 4px，和收起左边栏时一致）。
+    // 原来的 12px / 16px 是为了把图标贴到浮卡里的内容上，留着会把图标顶到这一栏的右边缘。
     & .workspace-ribbon.mod-left:not(.is-collapsed) {
-      padding-left: 16px;
-    }
-    & .mod-sidedock.mod-left-split:not(.is-sidedock-collapsed) {
-      margin-left: calc(-1 * var(--ribbon-width) + 8px);
-      padding-left: var(--ribbon-width);
+      padding-left: var(--size-4-1);
     }
 
     .workspace-ribbon.mod-left .sidebar-toggle-button .clickable-icon:hover,
@@ -46,20 +48,45 @@ body:not(.is-mobile) {
   // 亮色取 --background-secondary（比编辑器深 5%）；暗色取 --background-primary-alt
   // （比编辑器浅 3%），比 --background-secondary 的 5% 收一点。
   // Baseline 原本只有暗色这一条，用的是 calc(l - 2)，边栏比编辑器深。
-  &:not(.is-translucent).theme-dark .mod-sidedock {
+  //
+  // 左侧功能区自己不带底色（Baseline 把 `--ribbon-background` 设成 transparent），露出的是它
+  // 底下的工作区，于是那一栏的颜色总和旁边对不上。按「旁边是谁」分两种：
+  //   · 左边栏开着（功能区不带 is-collapsed）→ 跟边栏同色，两栏连成一片；
+  //   · 左边栏收起（功能区带 is-collapsed）→ 右边就是编辑器，那一栏得跟编辑器同色。
+  &:not(.is-translucent).theme-dark .mod-sidedock,
+  &:not(.is-translucent).theme-dark .workspace-ribbon.mod-left:not(.is-collapsed) {
     background-color: var(--background-primary-alt);
   }
-  &:not(.is-tablet):not(.is-translucent).theme-light .mod-sidedock {
+  &:not(.is-tablet):not(.is-translucent).theme-light .mod-sidedock,
+  &:not(.is-tablet):not(.is-translucent).theme-light .workspace-ribbon.mod-left:not(.is-collapsed) {
     background-color: var(--background-secondary);
   }
-  &.is-translucent .mod-sidedock {
+  &.is-translucent .mod-sidedock,
+  &.is-translucent .workspace-ribbon.mod-left:not(.is-collapsed) {
     background-color: rgba(from var(--background-primary) r g b / 50%) !important;
+  }
+  // 窗口失焦时边栏转成 --background-modifier-hover（上面那条规则），功能区跟着一起转，
+  // 否则那一栏又会岔色。这条必须排在 .is-translucent 之后：两条都是 !important、
+  // 特指度也一样，只能靠先后顺序分胜负。
+  &:not(.is-focused) .workspace-ribbon.mod-left:not(.is-collapsed) {
+    background-color: var(--background-modifier-hover) !important;
+  }
+  // 左边栏收起时功能区右边就是编辑器，这一栏跟编辑器同色（亮色白、暗色 #1e1e1e），
+  // 不然编辑器是白的、那一栏是灰的，中间会有一条明显的分界。放最后同样是为了压过上面几条。
+  .workspace-ribbon.mod-left.is-collapsed {
+    background-color: var(--background-primary) !important;
   }
   .mod-sidedock {
     transition:
       var(--anim-duration-moderate),
       background-color 0s,
       box-shadow 0s;
+  }
+  // 功能区整条的过渡跟边栏对齐：边栏底色是立即切换（上一条），功能区在 sidedock.scss 里
+  // 写的是整条走 320ms，失焦 / 聚焦时两边的底色会一前一后，看着像「不同步」。
+  // 这里只把 background-color 提到 0s，宽度、内边距这些照旧走动画。
+  .workspace-ribbon.mod-left {
+    transition: var(--anim-duration-moderate), background-color 0s !important;
   }
   // Settings
   &:not(.is-tablet) .modal.mod-settings .vertical-tab-header {
@@ -78,10 +105,15 @@ body:not(.is-mobile) {
 }
 
 // Ribbon
-body:not(.is-mobile).mod-macos.is-hidden-frameless .workspace-ribbon.mod-left.is-collapsed {
-  margin-top: calc(var(--header-height) - 1px);
-  padding-top: 8px;
-  border-top: var(--tab-outline-width) solid var(--tab-outline-color);
+// 功能区要整条铺满窗口高度。它自己的 margin-top 是标题栏高度，于是窗口左上角那一块
+// （红绿灯所在的位置）露出来的是工作区底色，跟功能区这一栏分成两种颜色。
+// 改成用 padding-top 让开标题栏，图标位置不变，底色却是一整条。
+// Baseline 这里只给「收起」的形态写了 margin-top / padding-top / 一条顶边线，
+// 那是给浮卡对齐用的，一并去掉。
+body:not(.is-mobile).mod-macos.is-hidden-frameless .workspace-ribbon.mod-left {
+  margin-top: 0;
+  padding-top: calc(var(--header-height) + 8px);
+  border-top: none;
 }
 
 // Tab style
