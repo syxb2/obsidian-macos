@@ -1,12 +1,26 @@
-// 按钮一律两端全圆，也就是「长条的椭圆形」（见 docs/customization.md 第 10 条）。
-// Baseline 把这两类按钮的圆角分成两个 token：--clickable-icon-radius 由
-// elements/baseline.scss 钉成 --radius-s（还带 !important，把本文件里那份 100vh 压住了），
-// --button-radius 则在本文件里被写成 --input-radius。下面这条把两者在桌面端统一成胶囊形，
-// 并挂上 !important —— core 的 `.mod-macos` 是类选择器，权重比 `body` 高，不带盖不过它。
-// 移动端与平板保持原样，所以排除了 .is-mobile 与 .is-tablet。
+// Obsidian 自己的按钮一律两端全圆，也就是「长条的椭圆形」（见 docs/customization.md 第 10 条）。
+//
+// 注意改的是「在哪些区域里把两个圆角 token 换成胶囊」，而不是全局改 token 本身：
+// --clickable-icon-radius 与 --button-radius 会被插件面板一起继承（例如 Claudian 就用
+// var(--button-radius, var(--radius-s)) 画自己的按钮），全局改等于把插件 UI 也改掉。
+// 只写在下面这些 Obsidian 自己的容器上，插件面板读到的仍是 Baseline 的取值，保持插件原样。
+//
+// 这些变量也得写在容器上而不是 `body` 上：core 的 `.mod-macos` 是类选择器，权重比 `body`
+// 高，直接写在 body 上盖不过它。移动端与平板不在范围内，保持 Baseline 原样。
 body:not(.is-mobile):not(.is-tablet) {
-  --clickable-icon-radius: 100vh !important;
-  --button-radius: 100vh;
+  // 功能区；标签栏（编辑器与两个边栏的选项卡、新建标签、标签列表、收起边栏）
+  .workspace-ribbon,
+  .workspace-tab-header-container,
+  // 编辑器面板右上角那一排；各核心面板顶部的操作行（文件浏览器等）
+  .view-header,
+  .nav-header,
+  // 弹窗（设置窗口、确认框…）；状态栏；空白标签页里的按钮
+  .modal,
+  .status-bar,
+  .workspace-leaf-content[data-type="empty"] {
+    --clickable-icon-radius: 100vh;
+    --button-radius: 100vh;
+  }
 }
 
 body {

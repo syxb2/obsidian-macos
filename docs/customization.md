@@ -225,7 +225,7 @@ body:not(.is-mobile) {
 
 边栏那几处共用 `--clickable-icon-radius`，跟下面第 10 条里的按钮一起改掉了。
 
-### 10. 按钮统一成胶囊形（`src/elements/cupertino.scss`）
+### 10. Obsidian 自己的按钮统一成胶囊形（`src/elements/cupertino.scss`）
 
 Baseline 把两类按钮的圆角分成两个 token，而且两份取值互相打架：
 
@@ -238,22 +238,37 @@ Baseline 把两类按钮的圆角分成两个 token，而且两份取值互相�
 ```
 
 core 自己还有一条 `.mod-macos { --clickable-icon-radius: var(--radius-m) }`，类选择器，
-权重比 `body` 高。所以桌面端统一改成：
+权重比 `body` 高。于是：
 
 ```scss
 body:not(.is-mobile):not(.is-tablet) {
-  --clickable-icon-radius: 100vh !important;
-  --button-radius: 100vh;
+  .workspace-ribbon,
+  .workspace-tab-header-container,
+  .view-header,
+  .nav-header,
+  .modal,
+  .status-bar,
+  .workspace-leaf-content[data-type="empty"] {
+    --clickable-icon-radius: 100vh;
+    --button-radius: 100vh;
+  }
 }
 ```
 
-于是所有图标按钮（功能区、视图右上角那一排、文件浏览器的操作行、设置里的按钮、标签栏里的
-新建标签 / 标签列表 / 收起边栏）和所有文本按钮（`button`、`.text-icon-button`，含各个弹窗的
-按钮）都变成两端全圆，和顶部那些选项卡统一。
+覆盖到的是 Obsidian 自己那几处：功能区的图标按钮、标签栏里的选项卡与新建标签 / 标签列表 /
+收起边栏、编辑器面板右上角那一排、各核心面板（文件浏览器等）顶部的操作行、设置窗口与各种
+弹窗里的按钮、状态栏、空白标签页里的按钮。它们都变成两端全圆，和顶部那些选项卡统一。
 
-要盖过 Baseline 那条必须带 `!important`；要盖过 core 的 `.mod-macos`，选择器得写得比它具体。
-`--button-radius` 这一条其实是回到 Baseline 的默认：它自己的公式在 `--radius-modifier >= 1`
-（本主题就是 1）时算出来正是 `100vh`，被 cupertino 那份 `--input-radius` 改成了 8px。
+**这两个变量只在上面这些容器里改，没有写在 `body` 上。** 原因是插件面板会一并继承它们，
+等于把插件 UI 也改了 —— 例如 Claudian 就是用 `var(--button-radius, var(--radius-s))` 画
+自己的按钮，全局改会把它面板里的按钮一起变成胶囊。现在插件面板、笔记正文、输入框、下拉框、
+列表行读到的都还是 Baseline 的取值，外观保持插件 / Baseline 原本的样子。
+
+写法上还有两点：变量必须写在容器上而不是 `body` 上，因为 core 的 `.mod-macos` 是类选择器，
+权重比 `body` 高，写在 body 上盖不过它，写在容器上就没有这个问题（元素自己的声明优先于继承
+下来的值，不需要 `!important`）。另外 `--button-radius` 这条其实是回到 Baseline 的默认：
+它自己的公式在 `--radius-modifier >= 1`（本主题就是 1）时算出来正是 `100vh`，被 cupertino
+那份 `--input-radius` 改成了 8px。
 
 移动端与平板排除在外，仍是 Baseline 原样。
 
