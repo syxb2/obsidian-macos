@@ -10,7 +10,7 @@
 仓库里不留上游副本；需要对照或重新派生时按
 [`../tools/README.md`](../tools/README.md) 把它 clone 到临时目录。
 
-## 一、相对 Baseline 的七处源码改动
+## 一、相对 Baseline 的八处源码改动
 
 ### 1. 左侧栏不再是浮卡（`src/layouts/macos.scss`）
 
@@ -175,6 +175,39 @@ body:not(.is-mobile) .workspace-split.mod-left-split.mod-horizontal {
 方向；静止时容器与内容同宽，这两种对齐看不出差别，所以拖拽调宽之类的状态不受影响。
 移动端的边栏是抽屉（不是 `workspace-split`），这条规则碰不到它。
 
+### 8. 弹窗打开时不再有缩放动画（`src/app/dialog.scss`、`src/elements/cupertino-dialog.scss`）
+
+Baseline 给弹窗（设置窗口也在内）写了入场动画，而且写了两份，后者生效：
+
+```scss
+// app/dialog.scss
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.975);
+  }
+}
+// elements/cupertino-dialog.scss
+@keyframes modalInCupertino {
+  from {
+    opacity: 1;
+    filter: none;
+    transform: scale(0.99);
+  }
+}
+
+.modal {
+  animation: … forwards; // 两处各挂了一条，后一条把它从 99% 放大到 100%
+}
+```
+
+于是打开设置窗口时，它会在 320ms 里从 99% 放大到 100%，而 `--anim-motion-baseline` 这条
+缓动还带一点过冲，看起来就是「弹」出来。Obsidian 原生的弹窗没有这段动画，所以把两条
+`.modal` 的动画和 `modalInCupertino` 一并删掉，弹窗直接出现，没有任何过渡。
+
+`@keyframes modalIn` 保留：`.prompt`（`src/app/prompt.scss`，快速切换 / 命令面板那一层）
+还在用它，本主题没有改那部分。
+
 ## 二、被固化的配置
 
 Baseline 的样式挂在 Style Settings 插件往 `<body>` 上加的 231 个类名上，还有一批值
@@ -249,7 +282,7 @@ npm run watch    # 或者边改边编译
    `git clone --depth 1 https://github.com/aaaaalexis/obsidian-baseline.git /tmp/baseline`。
 2. 跑 `python3 tools/derive-src.py --source /tmp/baseline`（只报告不写入），
    看有哪些文件会被丢弃、哪些选择器会被改写。
-3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面七处改动
+3. 确认后用 `--write` 生成新的 `src/`，再按本文档重做上面八处改动
    （工具会覆盖 `src/`，`app/config.scss` 需要重新加回）。
 4. `npm run build`，对比 `theme.css` 的差异。
 

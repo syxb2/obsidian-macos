@@ -157,6 +157,7 @@ body {
 }
 
 body:not(.is-mobile) {
+  // 这份 keyframes 保留给 `.prompt`（`app/prompt.scss`）用；弹窗本身不再有入场动画。
   @keyframes modalIn {
     from {
       opacity: 0;
@@ -166,9 +167,6 @@ body:not(.is-mobile) {
 
   .modal-bg {
     opacity: 0.2 !important;
-  }
-  .modal {
-    animation: modalIn var(--anim-duration-moderate) var(--anim-motion-baseline) forwards;
   }
   .modal-title {
     margin-left: 0;

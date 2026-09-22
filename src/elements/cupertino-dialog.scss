@@ -148,18 +148,10 @@ body.is-tablet {
 }
 
 // Modal
+// 弹窗（设置窗口也在内）打开时直接出现，不做入场动画：Obsidian 原生就没有，
+// 原来这里那条 modalInCupertino 会把它从 99% 放大到 100%，看着像「弹出来」。
+// 详见 docs/customization.md。
 body:not(.is-mobile) {
-  @keyframes modalInCupertino {
-    from {
-      opacity: 1;
-      filter: none;
-      transform: scale(0.99);
-    }
-  }
-  .modal {
-    animation: modalInCupertino var(--anim-duration-moderate) var(--anim-motion-baseline) forwards;
-  }
-
   .modal:not(.mod-sidebar-layout) {
     .modal-title {
       width: 100%;
